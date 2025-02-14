@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = "postgresql://postgres.txqsdzdcmmozvzhpswrj:13Baapsur@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+  directUrl = "postgresql://postgres.txqsdzdcmmozvzhpswrj:13Baapsur@aws-0-ap-south-1.pooler.supabase.com:5432/postgres"
+}
+
+model User {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username          String    @unique
+  currentwaterlevel Int
+  timeleft          Int?
+  isactive          Boolean   @default(false)
+  estimatedfilltime DateTime? @db.Timestamp(6)
+  lastupdatetime    DateTime? @db.Timestamp(6)
+}
