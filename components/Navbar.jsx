@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { Home, BarChart2, User } from "lucide-react";
+import { Home,  User } from "lucide-react";
 
 export default function Navbar() {
   return (
-    <nav className="container mx-auto px-8 shadow-md">
+    <nav className="container mx-auto px-8 border border-gray-300">
       <div className="flex justify-between items-center h-16">
         <div className="text-xl font-bold flex space-x-4">
           <Link
@@ -13,13 +13,13 @@ export default function Navbar() {
             <Home size={20} />
             <span>Home</span>
           </Link>
-          <Link
+          {/* <Link
             href="/stats"
             className="flex items-center space-x-1 hover:text-blue-200"
           >
             <BarChart2 size={20} />
             <span>Stats</span>
-          </Link>
+          </Link> */}
         </div>
         <button className="flex items-center space-x-1 hover:text-blue-200">
           <User size={20} />

@@ -1,28 +1,29 @@
-"use client"; // Ensure it runs only on the client side
-
-import { useEffect, useRef } from "react";
+"use client";
+import { useEffect, useRef, useState } from "react";
 
 export default function Bubbles() {
   const bubblesRef = useRef(null);
+  const [bubbles, setBubbles] = useState([]);
 
   useEffect(() => {
-    if (bubblesRef.current) {
-      bubblesRef.current.querySelectorAll(".bubble").forEach((bubble) => {
-        let delay = Math.random() * 5; // Random delay for a natural effect
-        bubble.style.animationDelay = `${delay}s`;
-      });
-    }
+    const bubbleData = Array.from({ length: 10 }).map(() => ({
+      left: Math.random() * 100,
+      duration: 3 + Math.random() * 2,
+      delay: Math.random() * 5,
+    }));
+    setBubbles(bubbleData);
   }, []);
 
   return (
     <div ref={bubblesRef} className="absolute bottom-0 w-full flex justify-center gap-4">
-      {Array.from({ length: 10 }).map((_, i) => (
+      {bubbles.map((bubble, i) => (
         <div
           key={i}
           className="bubble w-4 h-4 bg-white/20 rounded-full absolute bottom-0"
           style={{
-            left: `${Math.random() * 100}%`, // Random X position
-            animation: `bubbleRise ${3 + Math.random() * 2}s infinite ease-in`,
+            left: `${bubble.left}%`,
+            animation: `bubbleRise ${bubble.duration}s infinite ease-in`,
+            animationDelay: `${bubble.delay}s`,
           }}
         />
       ))}
@@ -33,7 +34,7 @@ export default function Bubbles() {
             opacity: 1;
           }
           100% {
-            transform: translateY(-100vh) scale(1);
+            transform: translateY(-100dvh) scale(1);
             opacity: 0;
           }
         }

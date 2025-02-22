@@ -4,16 +4,42 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import WaterTank from "@/components/WaterTank";
 import axios from "./libs/axios";
+import { getSupabaseClient } from "./libs/supabaseClient";
 
 export default function Home() {
+
   const [userData, setUserData] = useState(null);
-  const [waterLevel, setWaterLevel] = useState(0);
+
+  const supabase = getSupabaseClient();
+  const handleUserTableChanges = (payload) => {
+    if (payload.errors && payload.errors.length > 0) {
+      console.error("Error:", payload.errors);
+    } else {
+      console.log("changes are done")
+      setUserData(payload.new);
+    }
+  };
   useEffect(() => {
     axios.post("/getData", { username: "Deepansu" }).then((res) => {
       setUserData(res.data);
-      setWaterLevel(res.data.currentwaterlevel * 10);
     });
+    
   }, []);
+  useEffect(() => {
+    const subscription = supabase
+      .channel("public:User")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "User" },
+        handleUserTableChanges
+      )
+      .subscribe();
+  
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, []);
+  
   function convertToIST(timeString) {
     if(!timeString) return '';
     const date = new Date(timeString);
@@ -27,27 +53,26 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-100dvh bg-gray-100 max-w-[385px] mx-auto font-geist">
       <Navbar />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto">
         <section
-          className="rounded-lg p-6"
-          style={{ height: "calc(2 * 64px)" }}
+          className="rounded-lg px-6 py-4"
         >
-          <div className="flex justify-between  items-center h-full">
-            <div className="shadow-md p-6 w-40 rounded-lg realtive">
+          <div className="flex justify-between  items-center h-full ">
+            <div className="p-6 w-40 rounded-lg realtive border border-gray-300">
               <div className="text-xs font-semibold">Water Level</div>
-              <div className="text-2xl font-bold text-blue-600">
-                {waterLevel}%
+              <div className={userData?.isactive ? "text-green-600 text-2xl font-bold" : "text-red-600 text-2xl font-bold"}>
+                {userData?.currentwaterlevel*10}%
               </div>
             </div>
-            <div className="shadow-md p-6 w-40 rounded-lg">
+            <div className="p-6 w-40 rounded-lg border border-gray-300">
               <div className="text-xs font-semibold">Estimated FillTime</div>
-              <div className="text-2xl font-bold">{convertToIST(userData?.estimatedfilltime)}</div>
+              <div className={userData?.isactive ? "text-green-600 text-[1.40rem] font-bold" : "text-red-600 text-[1.40rem] font-bold"}>{convertToIST(userData?.estimatedfilltime) || "Off"}</div>
             </div>
           </div>
         </section>
-        <WaterTank level={waterLevel} />
+        <WaterTank level={userData?.currentwaterlevel*10} timeleft={Math.floor(userData?.timeleft)} isactive={userData?.isactive}/>
       </main>
     </div>
   );
