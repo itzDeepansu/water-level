@@ -76,7 +76,7 @@ export default function Home() {
                   userData?.isactive
                     ? "text-green-600"
                     : "text-red-600"
-                }> {userData?.currentwaterlevel * 10}%</div>}
+                }> {userData?.currentwaterlevel}%</div>}
                
               </div>
             </div>

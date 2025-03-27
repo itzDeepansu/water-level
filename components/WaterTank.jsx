@@ -56,7 +56,7 @@ export default function WaterTank({ level, timeleft, isactive, loading }) {
         style={{ height: `${tankHeight}px` }}
       >
         <div className="inset-y-0 -left-10 w-10 flex flex-col-reverse justify-between py-2 ">
-          {[10, 25, 50, 75, 100].map((percentage) => (
+          {[10, 35, 60, 85, 100].map((percentage) => (
             <div key={percentage} className="flex items-center">
               <span className="mr-1 text-sm text-blue-800">{percentage}%</span>
               <div className="w-3 h-0.5 bg-blue-800"></div>
