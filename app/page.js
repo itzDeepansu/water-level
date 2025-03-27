@@ -54,7 +54,7 @@ export default function Home() {
     };
     return new Intl.DateTimeFormat("en-IN", options).format(date);
   }
-
+  const now = new Date(); // Get current time
   return (
     <div className="bg-gray-100 max-w-[385px] mx-auto font-geist">
       <Navbar />
@@ -96,14 +96,14 @@ export default function Home() {
                 userData?.isactive
                   ? "text-green-600 "
                   : "text-red-600"
-              }>{convertToIST(userData?.estimatedfilltime) || "Off"}</div> }
+              }>{convertToIST(new Date(now.getTime() + (Math.floor((100 - userData?.currentwaterlevel)*1)) * 60000)) || "Off"}</div> }
               </div>
             </div>
           </div>
         </section>
         <WaterTank
-          level={userData?.currentwaterlevel * 10}
-          timeleft={Math.floor(userData?.timeleft)}
+          level={userData?.currentwaterlevel}
+          timeleft={Math.floor((100 - userData?.currentwaterlevel)*1)}
           isactive={userData?.isactive}
           loading={loading}
         />
